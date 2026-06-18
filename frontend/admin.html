@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Admin Cinema</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1d1d1f;
+        background: #f7f3ec;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+      }
+
+      .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px clamp(18px, 5vw, 64px);
+        border-bottom: 1px solid rgba(38, 29, 21, 0.08);
+        background: rgba(247, 243, 236, 0.92);
+      }
+
+      a {
+        color: #c7192b;
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+        gap: 22px;
+        padding: clamp(24px, 5vw, 56px) clamp(18px, 5vw, 64px);
+      }
+
+      .panel {
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 22px;
+        box-shadow: 0 18px 36px rgba(36, 28, 22, 0.08);
+      }
+
+      h1,
+      h2 {
+        margin: 0 0 18px;
+        color: #171210;
+        letter-spacing: 0;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        color: #6c5c4e;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid #dfd3c4;
+        border-radius: 6px;
+        padding: 10px 12px;
+        background: #fffaf3;
+        color: #211816;
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      button {
+        min-height: 40px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 14px;
+        cursor: pointer;
+        font-weight: 900;
+      }
+
+      .primary {
+        background: #c7192b;
+        color: #ffffff;
+      }
+
+      .secondary {
+        background: #f4eee6;
+        color: #4d4136;
+      }
+
+      .danger {
+        background: #2b1b18;
+        color: #ffffff;
+      }
+
+      .movie-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .movie-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        border: 1px solid #efe4d7;
+        border-radius: 8px;
+        padding: 14px;
+        background: #fffaf3;
+      }
+
+      .movie-row h3 {
+        margin: 0 0 6px;
+        color: #1d1916;
+      }
+
+      .movie-row p {
+        margin: 0;
+        color: #6c6258;
+        font-size: 14px;
+      }
+
+      .message {
+        margin: 12px 0 0;
+        color: #6c5c4e;
+        font-weight: 800;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="/homepage.html">Cinema House</a>
+      <span id="adminName">Admin</span>
+    </header>
+
+    <main>
+      <section class="panel">
+        <h1 id="formTitle">Thêm phim mới</h1>
+        <form id="movieForm">
+          <input type="hidden" id="movieId" />
+          <label>
+            Tên phim
+            <input id="title" required />
+          </label>
+          <label>
+            Mô tả
+            <textarea id="description" required></textarea>
+          </label>
+          <label>
+            Đạo diễn
+            <input id="director" type="text" />
+          </label>
+          <label>
+            Diễn viên
+            <input id="cast" type="text" />
+          </label>
+          <label>
+            Thể loại
+            <input id="genre" type="text" />
+          </label>
+          <label>
+            Âm thanh
+            <select id="audioLanguage">
+              <option value="Tiếng Anh">Tiếng Anh</option>
+              <option value="Tiếng Việt">Tiếng Việt</option>
+            </select>
+          </label>
+          <label>
+            Phụ đề
+            <select id="subtitleLanguage">
+              <option value="Tiếng Anh">Tiếng Anh</option>
+              <option value="Tiếng Việt">Tiếng Việt</option>
+            </select>
+          </label>
+          <label>
+            Rated
+            <select id="rated">
+              <option value="Không hạn chế">Không hạn chế</option>
+              <option value="16+">16+</option>
+              <option value="18+">18+</option>
+            </select>
+          </label>
+          <label>
+            Thời lượng
+            <select id="duration" required>
+              <option value="120">120</option>
+              <option value="240">240</option>
+              <option value="360">360</option>
+            </select>
+          </label>
+          <label>
+            Ngày khởi chiếu
+            <input id="releaseDate" required type="date" />
+          </label>
+          <label>
+            Poster URL
+            <input id="posterUrl" required type="url" />
+          </label>
+          <label>
+            Trailer Youtube URL
+            <input id="trailerUrl" type="url" />
+          </label>
+          <label>
+            Trạng thái
+            <select id="status">
+              <option value="dang_chieu">Đang chiếu</option>
+              <option value="sap_chieu">Sắp chiếu</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button class="primary" type="submit">Lưu phim</button>
+            <button class="secondary" id="resetButton" type="button">Làm mới</button>
+          </div>
+        </form>
+        <p class="message" id="message"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Quản lý phim</h2>
+        <div class="movie-list" id="movieList">
+          <p>Đang tải danh sách phim...</p>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const API_URL = window.API_URL || "http://localhost:5000";
+      const adminName = document.querySelector("#adminName");
+      const movieForm = document.querySelector("#movieForm");
+      const movieList = document.querySelector("#movieList");
+      const formTitle = document.querySelector("#formTitle");
+      const message = document.querySelector("#message");
+      const resetButton = document.querySelector("#resetButton");
+      let movies = [];
+
+      const fields = {
+        movieId: document.querySelector("#movieId"),
+        title: document.querySelector("#title"),
+        description: document.querySelector("#description"),
+        director: document.querySelector("#director"),
+        cast: document.querySelector("#cast"),
+        genre: document.querySelector("#genre"),
+        audioLanguage: document.querySelector("#audioLanguage"),
+        subtitleLanguage: document.querySelector("#subtitleLanguage"),
+        rated: document.querySelector("#rated"),
+        duration: document.querySelector("#duration"),
+        releaseDate: document.querySelector("#releaseDate"),
+        posterUrl: document.querySelector("#posterUrl"),
+        trailerUrl: document.querySelector("#trailerUrl"),
+        status: document.querySelector("#status")
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function toDateInput(value) {
+        if (!value) return "";
+        return new Date(value).toISOString().slice(0, 10);
+      }
+
+      function formatStatus(status) {
+        return status === "dang_chieu" ? "Đang chiếu" : "Sắp chiếu";
+      }
+
+      function setMinReleaseDate() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        fields.releaseDate.min = tomorrow.toISOString().slice(0, 10);
+      }
+
+      function resetForm() {
+        movieForm.reset();
+        fields.movieId.value = "";
+        fields.status.value = "dang_chieu";
+        fields.audioLanguage.value = "Tiếng Việt";
+        fields.subtitleLanguage.value = "Tiếng Việt";
+        fields.rated.value = "Không hạn chế";
+        setMinReleaseDate();
+        formTitle.textContent = "Thêm phim mới";
+        message.textContent = "";
+      }
+
+      function fillForm(movie) {
+        fields.movieId.value = movie.id;
+        fields.title.value = movie.title;
+        fields.description.value = movie.description;
+        fields.director.value = movie.director || "";
+        fields.cast.value = movie.cast || "";
+        fields.genre.value = movie.genre || "";
+        fields.audioLanguage.value = movie.audio_language || "Tiếng Việt";
+        fields.subtitleLanguage.value = movie.subtitle_language || "Tiếng Việt";
+        fields.rated.value = movie.rated || "Không hạn chế";
+        fields.duration.value = movie.duration;
+        fields.releaseDate.value = toDateInput(movie.release_date);
+        fields.posterUrl.value = movie.poster_url;
+        fields.trailerUrl.value = movie.trailer_url || "";
+        fields.status.value = movie.status;
+        formTitle.textContent = "Sửa phim";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function renderMovies() {
+        if (!movies.length) {
+          movieList.innerHTML = "<p>Chưa có phim.</p>";
+          return;
+        }
+
+        movieList.innerHTML = movies
+          .map(
+            (movie) => `
+              <article class="movie-row">
+                <div>
+                  <h3>${escapeHtml(movie.title)}</h3>
+                  <p>${escapeHtml(movie.duration)} phút · ${escapeHtml(formatStatus(movie.status))}</p>
+                </div>
+                <div class="actions">
+                  <button class="secondary" type="button" data-edit="${escapeHtml(movie.id)}">Sửa</button>
+                  <button class="danger" type="button" data-delete="${escapeHtml(movie.id)}">Xóa</button>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      async function apiRequest(path, options = {}) {
+        const response = await fetch(`${API_URL}${path}`, {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+          },
+          ...options
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Thao tác thất bại");
+        }
+
+        return result;
+      }
+
+      async function ensureAdmin() {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
+          credentials: "include"
+        });
+
+        if (!response.ok) {
+          window.location.href = "/";
+          return false;
+        }
+
+        const result = await response.json();
+
+        if (result.data?.role !== "admin") {
+          document.body.innerHTML = "<main style='padding: 40px; font-family: system-ui'>Bạn không có quyền truy cập trang admin.</main>";
+          return false;
+        }
+
+        adminName.textContent = result.data.fullName || result.data.email || "Admin";
+        return true;
+      }
+
+      async function loadMovies() {
+        const result = await apiRequest("/api/movies?limit=50");
+        movies = result.data;
+        renderMovies();
+      }
+
+      movieForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const movieId = fields.movieId.value;
+        const payload = {
+          title: fields.title.value,
+          description: fields.description.value,
+          director: fields.director.value,
+          cast: fields.cast.value,
+          genre: fields.genre.value,
+          audio_language: fields.audioLanguage.value,
+          subtitle_language: fields.subtitleLanguage.value,
+          rated: fields.rated.value,
+          duration: Number(fields.duration.value),
+          release_date: fields.releaseDate.value,
+          poster_url: fields.posterUrl.value,
+          trailer_url: fields.trailerUrl.value,
+          status: fields.status.value
+        };
+
+        try {
+          await apiRequest(movieId ? `/api/movies/${movieId}` : "/api/movies", {
+            method: movieId ? "PUT" : "POST",
+            body: JSON.stringify(payload)
+          });
+          message.textContent = "Đã lưu phim.";
+          resetForm();
+          await loadMovies();
+        } catch (error) {
+          message.textContent = error.message;
+        }
+      });
+
+      movieList.addEventListener("click", async (event) => {
+        const editId = event.target.dataset.edit;
+        const deleteId = event.target.dataset.delete;
+
+        if (editId) {
+          const movie = movies.find((item) => item.id === editId);
+          if (movie) fillForm(movie);
+        }
+
+        if (deleteId && confirm("Xóa phim này?")) {
+          await apiRequest(`/api/movies/${deleteId}`, { method: "DELETE" });
+          await loadMovies();
+        }
+      });
+
+      resetButton.addEventListener("click", resetForm);
+
+      ensureAdmin().then((ok) => {
+        if (ok) loadMovies();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính tiền tip</title>
+    <script src="tientip.js"></script>
+    <link rel="stylesheet" href="tientip.css">
+</head>
+<body>
+    <form action="">
+    <div id="wrapper">
+        <div id="header">
+            TIP CACULATOR
+        </div>
+        <div id="content">
+            <p>How much was your bill?</p>
+            <p>
+                <img src="dollar.png" alt="$$$">
+                <input type="text" name="bill" id="bill" placeholder="Your bill ... ?">
+            </p>
+            <p>How was your service?</p>
+            <select name="service" id="service" size="1">
+                <option value="">-- Choose an Option --</option>
+                <option value="30">30% - Uotstanding</option>
+                <option value="20">20% - Good</option>
+                <option value="15">15% - It was ok</option>
+                <option value="10">10% - Bad</option>
+                <option value="5">5% - Terrible</option>
+            </select>
+            <p>How many people are sharing the bill???</p>
+            <input type="text" name="people" id="people" placeholder="Nhập số người">
+            people
+            <br>
+            <input type="button" id="calculate" value="CACULATE" size="3" onclick="tinhtientip()">
+            <div id="thongbao"></div>
+        </div>
+    </div>
+    </form>
+</body>
+</html>

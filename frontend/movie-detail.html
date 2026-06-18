@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Chi tiết phim</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1d1d1f;
+        background: #f7f3ec;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: #f7f3ec;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px clamp(18px, 5vw, 64px);
+        border-bottom: 1px solid rgba(38, 29, 21, 0.08);
+        background: rgba(247, 243, 236, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand,
+      .nav-link {
+        color: #c7192b;
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      .detail {
+        display: grid;
+        grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+        gap: clamp(24px, 5vw, 58px);
+        padding: clamp(26px, 6vw, 72px) clamp(18px, 5vw, 64px);
+      }
+
+      .poster {
+        min-height: 510px;
+        overflow: hidden;
+        border-radius: 8px;
+        background:
+          radial-gradient(circle at 26% 24%, rgba(255, 255, 255, 0.28), transparent 28%),
+          linear-gradient(145deg, #1b1717, #c7192b 58%, #efbc63);
+        box-shadow: 0 22px 48px rgba(36, 28, 22, 0.16);
+      }
+
+      .poster img {
+        width: 100%;
+        height: 100%;
+        min-height: 510px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .content h1 {
+        margin: 0;
+        color: #171210;
+        font-size: clamp(36px, 6vw, 66px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 18px 0 26px;
+      }
+
+      .meta span {
+        border-radius: 999px;
+        padding: 7px 11px;
+        background: #fff7ee;
+        color: #67594d;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .description {
+        max-width: 760px;
+        margin: 0 0 28px;
+        color: #5f554a;
+        font-size: 18px;
+        line-height: 1.65;
+      }
+
+      .trailer {
+        aspect-ratio: 16 / 9;
+        width: min(100%, 760px);
+        overflow: hidden;
+        border-radius: 8px;
+        background: #211816;
+      }
+
+      .trailer iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .empty-trailer,
+      .state-message {
+        display: grid;
+        min-height: 220px;
+        place-items: center;
+        padding: 28px;
+        color: #f7f3ec;
+        text-align: center;
+      }
+
+      .format-info {
+        margin: 22px 0 18px;
+        color: #171210;
+        font-weight: 900;
+        font-size: 16px;
+      }
+
+      .format-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 22px;
+        font-size: 14px;
+        color: #6c5c4e;
+      }
+
+      .format-details div {
+        display: flex;
+        gap: 6px;
+      }
+
+      .format-details strong {
+        color: #211816;
+        font-weight: 800;
+      }
+
+      .book-button {
+
+        min-height: 48px;
+        margin-top: 26px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 22px;
+        background: #c7192b;
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: 900;
+      }
+
+      @media (max-width: 780px) {
+        .detail {
+          grid-template-columns: 1fr;
+        }
+
+        .poster,
+        .poster img {
+          min-height: 380px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/homepage.html">Cinema House</a>
+      <a class="nav-link" href="/account.html">Tài khoản</a>
+    </header>
+
+    <main class="detail" id="movieDetail">
+      <div class="state-message" style="color: #6c5c4e">Đang tải chi tiết phim...</div>
+    </main>
+
+    <script>
+      const API_URL = window.API_URL || "http://localhost:5000";
+      const detail = document.querySelector("#movieDetail");
+      const params = new URLSearchParams(window.location.search);
+      const movieId = params.get("id");
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function formatDate(dateValue) {
+        return new Intl.DateTimeFormat("vi-VN").format(new Date(dateValue));
+      }
+
+      function formatStatus(status) {
+        return status === "dang_chieu" ? "Đang chiếu" : "Sắp chiếu";
+      }
+
+      function youtubeEmbedUrl(url) {
+        if (!url) return "";
+
+        try {
+          const parsed = new URL(url);
+
+          if (parsed.hostname.includes("youtu.be")) {
+            return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}`;
+          }
+
+          if (parsed.hostname.includes("youtube.com")) {
+            const videoId = parsed.searchParams.get("v") || parsed.pathname.split("/").pop();
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+          }
+        } catch {
+          return "";
+        }
+
+        return "";
+      }
+
+      function renderMovie(movie) {
+        const embedUrl = youtubeEmbedUrl(movie.trailer_url);
+        const audioLanguage = escapeHtml(movie.audio_language || "Tiếng Việt");
+        const subtitleLanguage = escapeHtml(movie.subtitle_language || "Tiếng Việt");
+        const rated = escapeHtml(movie.rated || "Không hạn chế");
+
+        detail.innerHTML = `
+          <aside class="poster">
+            ${
+              movie.poster_url
+                ? `<img src="${escapeHtml(movie.poster_url)}" alt="${escapeHtml(movie.title)}" />`
+                : ""
+            }
+          </aside>
+          <section class="content">
+            <h1>${escapeHtml(movie.title)}</h1>
+            <div class="meta">
+              <span>${escapeHtml(movie.duration || "--")} phút</span>
+              <span>${escapeHtml(formatDate(movie.release_date))}</span>
+              <span>${rated}</span>
+            </div>
+            <div class="format-info">2D ${audioLanguage}</div>
+            <div class="format-details">
+              <div><strong>Âm thanh:</strong> ${audioLanguage}</div>
+              <div><strong>Phụ đề:</strong> ${subtitleLanguage}</div>
+            </div>
+            <p class="description">${escapeHtml(movie.description || "Nội dung phim đang được cập nhật.")}</p>
+            <div class="trailer">
+              ${
+                embedUrl
+                  ? `<iframe src="${escapeHtml(embedUrl)}" title="Trailer ${escapeHtml(movie.title)}" allowfullscreen></iframe>`
+                  : `<div class="empty-trailer">Trailer đang được cập nhật</div>`
+              }
+            </div>
+            <button class="book-button" type="button">Đặt vé</button>
+          </section>
+        `;
+
+        detail.querySelector(".book-button").addEventListener("click", () => {
+          alert("Chức năng đặt vé sẽ nối với phân hệ suất chiếu ở bước tiếp theo.");
+        });
+      }
+
+      async function loadMovie() {
+        if (!movieId) {
+          detail.innerHTML = '<div class="state-message" style="color: #6c5c4e">Thiếu mã phim.</div>';
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/api/movies/${movieId}`, {
+          credentials: "include"
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Không thể tải chi tiết phim");
+        }
+
+        renderMovie(result.data);
+      }
+
+      loadMovie().catch((error) => {
+        detail.innerHTML = `<div class="state-message" style="color: #6c5c4e">${escapeHtml(error.message)}</div>`;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+img {
+    height: 16px;
+}
+
+form{
+    width: 300px;
+    margin: auto;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#wrapper{
+    border: 2px red solid;
+    border-radius: 10px;
+    background-color: bisque;
+    height: 400px;
+}
+
+#header{
+    background-color: black;
+    color: white;
+    border-radius: 10px 10px 0px 0px;
+    height: 30px;
+}
+
+#calculate{
+    height: 50px;
+    width: 130px;
+    margin-top: 10px;
+}
+
+#service{
+    height: 60px;
+}

@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Trang chủ rạp phim</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1d1d1f;
+        background: #f7f3ec;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          linear-gradient(180deg, rgba(167, 23, 31, 0.08), transparent 280px),
+          #f7f3ec;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px clamp(18px, 5vw, 64px);
+        border-bottom: 1px solid rgba(38, 29, 21, 0.08);
+        background: rgba(247, 243, 236, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #c7192b;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #c7192b;
+        color: #ffffff;
+      }
+
+      .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .main-nav a {
+        color: #514940;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .main-nav a[hidden] {
+        display: none;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .user-chip {
+        max-width: 220px;
+        overflow: hidden;
+        color: #2f2924;
+        font-size: 14px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .logout-button {
+        min-height: 40px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 16px;
+        background: #1f1a17;
+        color: #ffffff;
+        cursor: pointer;
+      }
+
+      .hero {
+        min-height: 440px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+        gap: clamp(24px, 5vw, 64px);
+        align-items: center;
+        padding: clamp(36px, 7vw, 82px) clamp(18px, 5vw, 64px) 42px;
+      }
+
+      .hero-copy {
+        max-width: 620px;
+      }
+
+      .eyebrow {
+        margin: 0 0 14px;
+        color: #c7192b;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        margin: 0;
+        color: #171210;
+        font-size: clamp(38px, 7vw, 78px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 560px;
+        margin: 22px 0 0;
+        color: #5f554a;
+        font-size: 18px;
+        line-height: 1.55;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .primary-link,
+      .secondary-link {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 6px;
+        padding: 0 18px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .primary-link {
+        background: #c7192b;
+        color: #ffffff;
+      }
+
+      .secondary-link {
+        border: 1px solid #d7cbbd;
+        color: #2d2823;
+        background: rgba(255, 255, 255, 0.52);
+      }
+
+      .hero-media {
+        position: relative;
+        min-height: 360px;
+        overflow: hidden;
+        border-radius: 10px;
+        background:
+          radial-gradient(circle at 30% 22%, #ffe7a4 0 15%, transparent 16%),
+          radial-gradient(circle at 78% 34%, #c7192b 0 12%, transparent 13%),
+          linear-gradient(145deg, #2c1d1b, #7d1521 48%, #e0a241);
+        box-shadow: 0 28px 60px rgba(91, 40, 24, 0.22);
+      }
+
+      .hero-media::before {
+        content: "";
+        position: absolute;
+        inset: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+      }
+
+      .film-strip {
+        position: absolute;
+        right: -36px;
+        bottom: 38px;
+        width: 220px;
+        height: 132px;
+        border: 14px solid rgba(255, 255, 255, 0.84);
+        transform: rotate(-13deg);
+        background:
+          linear-gradient(90deg, rgba(20, 18, 18, 0.85) 10px, transparent 10px) 0 0 / 34px
+            100%,
+          linear-gradient(135deg, #151515, #6f151d);
+      }
+
+      .hero-card {
+        position: absolute;
+        left: 34px;
+        bottom: 34px;
+        width: min(78%, 300px);
+        padding: 18px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .hero-card strong {
+        display: block;
+        color: #1d1714;
+        font-size: 22px;
+        line-height: 1.15;
+      }
+
+      .hero-card span {
+        display: block;
+        margin-top: 8px;
+        color: #7a4636;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .section {
+        padding: 26px clamp(18px, 5vw, 64px) 64px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      .section-header h2 {
+        margin: 0;
+        color: #1c1714;
+        font-size: clamp(26px, 4vw, 42px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .movie-filters {
+        display: flex;
+        gap: 10px;
+      }
+
+      .movie-filters button {
+        min-height: 38px;
+        border: 1px solid #dfd3c4;
+        border-radius: 6px;
+        padding: 0 14px;
+        background: #fffaf3;
+        color: #54493e;
+        cursor: pointer;
+      }
+
+      .movie-filters button.is-active {
+        border-color: #c7192b;
+        background: #c7192b;
+        color: #ffffff;
+      }
+
+      .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 18px;
+      }
+
+      .movie-card {
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #ffffff;
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 18px 36px rgba(36, 28, 22, 0.08);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .movie-card:hover,
+      .movie-card:focus-visible {
+        transform: translateY(-3px);
+        box-shadow: 0 22px 44px rgba(36, 28, 22, 0.14);
+      }
+
+      .poster {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        min-height: 260px;
+        display: grid;
+        place-items: end;
+        background:
+          radial-gradient(circle at 26% 24%, rgba(255, 255, 255, 0.28), transparent 28%),
+          linear-gradient(145deg, #1b1717, #c7192b 58%, #efbc63);
+        color: #ffffff;
+      }
+
+      .poster img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .poster span {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.32) 100%);
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 1.1;
+      }
+
+      .movie-info {
+        padding: 16px;
+      }
+
+      .movie-info h3 {
+        margin: 0;
+        color: #1d1916;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+
+      .movie-info p {
+        min-height: 46px;
+        margin: 10px 0 14px;
+        color: #6c6258;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .movie-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .movie-meta span {
+        border-radius: 999px;
+        padding: 5px 9px;
+        background: #f4eee6;
+        color: #67594d;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .state-message {
+        padding: 28px;
+        border: 1px dashed #d9cbbb;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.62);
+        color: #6c5c4e;
+      }
+
+      @media (max-width: 840px) {
+        .site-header,
+        .section-header,
+        .hero {
+          align-items: stretch;
+        }
+
+        .main-nav {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-media {
+          min-height: 300px;
+        }
+
+        .section-header {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/homepage.html" aria-label="Trang chủ Cinema">
+        <span class="brand-mark">C</span>
+        <span>Cinema House</span>
+      </a>
+      <nav class="main-nav" aria-label="Điều hướng chính">
+        <a href="#movies">Phim</a>
+        <a href="#offers">Ưu đãi</a>
+        <a href="/account.html">Tài khoản</a>
+        <a href="/admin.html" id="adminLink" hidden>Admin</a>
+      </nav>
+      <div class="header-actions" id="account">
+        <span class="user-chip" id="userName">Đang kiểm tra...</span>
+        <button class="logout-button" id="logoutButton" type="button">Đăng xuất</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="offers">
+        <div class="hero-copy">
+          <p class="eyebrow">Trải nghiệm điện ảnh hôm nay</p>
+          <h1>Đặt vé nhanh, xem phim thật đã.</h1>
+          <p>
+            Chọn phim đang chiếu, theo dõi lịch sắp chiếu và nhận ưu đãi thành viên ngay trên
+            trang chủ sau khi đăng nhập.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#movies">Xem phim đang chiếu</a>
+            <a class="secondary-link" href="#comingSoon">Phim sắp chiếu</a>
+          </div>
+        </div>
+        <div class="hero-media" aria-label="Banner rạp phim">
+          <div class="film-strip" aria-hidden="true"></div>
+          <div class="hero-card">
+            <strong>Combo bắp nước cuối tuần</strong>
+            <span>Ưu đãi dành riêng cho thành viên mới</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="movies">
+        <div class="section-header">
+          <h2>Danh sách phim</h2>
+          <div class="movie-filters" aria-label="Lọc phim">
+            <button class="is-active" type="button" data-status="">Tất cả</button>
+            <button type="button" data-status="dang_chieu">Đang chiếu</button>
+            <button type="button" data-status="sap_chieu" id="comingSoon">Sắp chiếu</button>
+          </div>
+        </div>
+        <div class="movie-grid" id="movieGrid">
+          <div class="state-message">Đang tải danh sách phim...</div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const API_URL = window.API_URL || "http://localhost:5000";
+      const userName = document.querySelector("#userName");
+      const movieGrid = document.querySelector("#movieGrid");
+      const filterButtons = document.querySelectorAll("[data-status]");
+      const logoutButton = document.querySelector("#logoutButton");
+      const adminLink = document.querySelector("#adminLink");
+
+      const fallbackMovies = [
+        {
+          title: "Cinema Premiere",
+          description: "Phim nổi bật trong tuần tại rạp.",
+          duration: 120,
+          release_date: new Date().toISOString(),
+          status: "dang_chieu"
+        },
+        {
+          title: "Midnight Show",
+          description: "Suất chiếu đặc biệt dành cho thành viên.",
+          duration: 108,
+          release_date: new Date().toISOString(),
+          status: "dang_chieu"
+        },
+        {
+          title: "Coming Soon",
+          description: "Tựa phim mới chuẩn bị ra mắt.",
+          duration: 115,
+          release_date: new Date().toISOString(),
+          status: "sap_chieu"
+        }
+      ];
+
+      function formatStatus(status) {
+        return status === "dang_chieu" ? "Đang chiếu" : "Sắp chiếu";
+      }
+
+      function formatDate(dateValue) {
+        return new Intl.DateTimeFormat("vi-VN").format(new Date(dateValue));
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function renderMovies(movies) {
+        if (!movies.length) {
+          movieGrid.innerHTML =
+            '<div class="state-message">Chưa có phim trong danh mục này. Hãy chạy seed backend để có dữ liệu mẫu.</div>';
+          return;
+        }
+
+        movieGrid.innerHTML = movies
+          .map(
+            (movie) => `
+              <a class="movie-card" href="/movie-detail.html?id=${encodeURIComponent(movie.id || movie._id || "")}">
+                <div class="poster">
+                  ${movie.poster_url
+                    ? `<img src="${escapeHtml(movie.poster_url)}" alt="${escapeHtml(movie.title)}" />`
+                    : ""}
+                  <span>${escapeHtml(movie.title)}</span>
+                </div>
+                <div class="movie-info">
+                  <h3>${escapeHtml(movie.title)}</h3>
+                  <div class="movie-meta">
+                    <span>${escapeHtml(movie.duration || "--")} phút</span>
+                    <span>${escapeHtml(formatDate(movie.release_date))}</span>
+                    <span>${escapeHtml(formatStatus(movie.status))}</span>
+                  </div>
+                </div>
+              </a>
+            `
+          )
+          .join("");
+      }
+
+      async function ensureAuthenticated() {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
+          credentials: "include"
+        });
+
+        if (!response.ok) {
+          window.location.href = "/";
+          return false;
+        }
+
+        const result = await response.json();
+        userName.textContent = result.data?.fullName || result.data?.email || "Thành viên";
+        adminLink.hidden = result.data?.role !== "admin";
+        return true;
+      }
+
+      async function loadMovies(status = "") {
+        movieGrid.innerHTML = '<div class="state-message">Đang tải danh sách phim...</div>';
+
+        try {
+          const query = status ? `?status=${status}` : "";
+          const response = await fetch(`${API_URL}/api/movies${query}`, {
+            credentials: "include"
+          });
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "Không thể tải danh sách phim");
+          }
+
+          renderMovies(result.data.length ? result.data : fallbackMovies);
+        } catch (error) {
+          movieGrid.innerHTML = `<div class="state-message">${escapeHtml(error.message)}</div>`;
+        }
+      }
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach((item) => item.classList.remove("is-active"));
+          button.classList.add("is-active");
+          loadMovies(button.dataset.status);
+        });
+      });
+
+      logoutButton.addEventListener("click", async () => {
+        await fetch(`${API_URL}/api/auth/logout`, {
+          method: "POST",
+          credentials: "include"
+        });
+        window.location.href = "/";
+      });
+
+      ensureAuthenticated().then((isAuthenticated) => {
+        if (isAuthenticated) {
+          loadMovies();
+        }
+      });
+    </script>
+  </body>
+</html>
